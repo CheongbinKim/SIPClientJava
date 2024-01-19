@@ -1,0 +1,23 @@
+spring:
+    profiles:
+        active: local
+    integration:
+        rsocket:
+            client:
+                uri: "ws://192.168.0.164:9090/ws"
+
+server:
+  port: 8080
+
+logging:
+    level:
+        root: info
+
+ari:
+    host: 192.168.0.165
+    port: 5061
+
+sip:
+    username: '9999'
+    password: '497844589ddca13f1ee32f44beab49ad'
+    port: 13000
