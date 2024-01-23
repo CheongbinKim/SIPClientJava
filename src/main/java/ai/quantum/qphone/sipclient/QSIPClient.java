@@ -25,7 +25,7 @@ import java.util.List;
 @Component
 public class QSIPClient {
     @Autowired
-    QSIPClientGateway messageGateway;
+    UdpMessageGateway messageGateway;
 
     private int cSeq = 1;
 
@@ -131,16 +131,6 @@ public class QSIPClient {
                     maxForwards
             );
 
-            /**
-             * Allow-Events: presence,refer,telephone-event,keep-alive,dialog
-             *          Supported: replaces, timer
-             *          Event: registration
-             *          User-Agent: QuantumPhone 0.1
-             *          Expires: 600
-             *          Accept: application/sdp,application/dtmf-relay,audio/telephone-event,message/sipfrag,text/plain,text/html
-             *          Content-Length: 0
-             */
-
             AllowEventsHeader allowEventsHeader = headerFactory.createAllowEventsHeader("presence,refer,telephone-event,keep-alive,dialog");
             SupportedHeader supportedHeader = headerFactory.createSupportedHeader("replaces, timer");
             EventHeader eventHeader = headerFactory.createEventHeader("registration");
@@ -161,15 +151,7 @@ public class QSIPClient {
 
             request.addHeader(expiresHeader);
 
-            // 생성된 REGISTER Request 출력
-            System.out.println("Created REGISTER Request:\n" + request);
-
             messageGateway.send(request.toString());
-
-//            UnicastSendingMessageHandler handler = new UnicastSendingMessageHandler(asteriskHost, asteriskPort);
-//            String payload = request.toString();
-//            handler.handleMessage(MessageBuilder.withPayload(payload).build());
-//            handler.stop();
         } catch (ParseException | InvalidArgumentException | SipException  e) {
             throw new RuntimeException(e);
         }
