@@ -1,5 +1,6 @@
 package ai.quantum.qphone.sipclient;
 
+import gov.nist.javax.sip.header.Event;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.ip.udp.UnicastSendingMessageHandler;
 import org.springframework.integration.support.MessageBuilder;
@@ -18,6 +19,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class QSIPClient {
@@ -103,8 +105,7 @@ public class QSIPClient {
             Address contactAddress = addressFactory.createAddress(contactUri);
             ContactHeader contactHeader = headerFactory.createContactHeader(contactAddress);
 
-            // Expires 헤더 생성 (선택적)
-            ExpiresHeader expiresHeader = headerFactory.createExpiresHeader(3600);
+
 
             // Allow 헤더 생성
             String methods = Request.INVITE + ", " + Request.ACK + ", "
@@ -126,9 +127,34 @@ public class QSIPClient {
                     maxForwards
             );
 
+            /**
+             * Allow-Events: presence,refer,telephone-event,keep-alive,dialog
+             *          Supported: replaces, timer
+             *          Event: registration
+             *          User-Agent: QuantumPhone 0.1
+             *          Expires: 600
+             *          Accept: application/sdp,application/dtmf-relay,audio/telephone-event,message/sipfrag,text/plain,text/html
+             *          Content-Length: 0
+             */
 
-            request.addHeader(allowHeader);
+            AllowEventsHeader allowEventsHeader = headerFactory.createAllowEventsHeader("presence,refer,telephone-event,keep-alive,dialog");
+            SupportedHeader supportedHeader = headerFactory.createSupportedHeader("replaces, timer");
+            EventHeader eventHeader = headerFactory.createEventHeader("registration");
+            List<String> agents = new ArrayList<>();
+            agents.add("QuantumPhone 0.1");
+            UserAgentHeader userAgentHeader = headerFactory.createUserAgentHeader(agents);
+            ExpiresHeader expiresHeader = headerFactory.createExpiresHeader(3600);
+            ContentLengthHeader contentLengthHeader = headerFactory.createContentLengthHeader(0);
+
+
             request.addHeader(contactHeader);
+            request.addHeader(allowHeader);
+            request.addHeader(allowEventsHeader);
+            request.addHeader(supportedHeader);
+            request.addHeader(eventHeader);
+            request.addHeader(userAgentHeader);
+            request.addHeader(contentLengthHeader);
+
             request.addHeader(expiresHeader);
 
             // 생성된 REGISTER Request 출력
