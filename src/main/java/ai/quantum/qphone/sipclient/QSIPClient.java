@@ -1,6 +1,7 @@
 package ai.quantum.qphone.sipclient;
 
 import gov.nist.javax.sip.header.Event;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.ip.udp.UnicastSendingMessageHandler;
@@ -22,6 +23,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Component
 public class QSIPClient {
     @Autowired
@@ -151,7 +153,11 @@ public class QSIPClient {
 
             request.addHeader(expiresHeader);
 
-            messageGateway.send(request.toString());
+            String sendPayload = request.toString();
+
+            log.info(sendPayload);
+
+            messageGateway.send(sendPayload);
         } catch (ParseException | InvalidArgumentException | SipException  e) {
             throw new RuntimeException(e);
         }
