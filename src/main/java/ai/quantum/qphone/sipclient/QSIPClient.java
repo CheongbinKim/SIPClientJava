@@ -1,6 +1,7 @@
 package ai.quantum.qphone.sipclient;
 
 import gov.nist.javax.sip.header.Event;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.ip.udp.UnicastSendingMessageHandler;
 import org.springframework.integration.support.MessageBuilder;
@@ -23,6 +24,9 @@ import java.util.List;
 
 @Component
 public class QSIPClient {
+    @Autowired
+    QSIPClientGateway messageGateway;
+
     private int cSeq = 1;
 
     @Value("${ari.host}")
@@ -160,10 +164,12 @@ public class QSIPClient {
             // 생성된 REGISTER Request 출력
             System.out.println("Created REGISTER Request:\n" + request);
 
-            UnicastSendingMessageHandler handler = new UnicastSendingMessageHandler(asteriskHost, asteriskPort);
-            String payload = request.toString();
-            handler.handleMessage(MessageBuilder.withPayload(payload).build());
-            handler.stop();
+            messageGateway.send(request.toString());
+
+//            UnicastSendingMessageHandler handler = new UnicastSendingMessageHandler(asteriskHost, asteriskPort);
+//            String payload = request.toString();
+//            handler.handleMessage(MessageBuilder.withPayload(payload).build());
+//            handler.stop();
         } catch (ParseException | InvalidArgumentException | SipException  e) {
             throw new RuntimeException(e);
         }
