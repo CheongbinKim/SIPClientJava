@@ -11,6 +11,10 @@ java {
 	sourceCompatibility = '21'
 }
 
+bootJar {
+	mainClass = 'ai.quantum.qphone.QphoneApplication'
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
