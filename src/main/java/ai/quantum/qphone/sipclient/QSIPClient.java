@@ -1,7 +1,6 @@
 package ai.quantum.qphone.sipclient;
 
 import gov.nist.javax.sip.header.Event;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.ip.udp.UnicastSendingMessageHandler;
@@ -22,13 +21,10 @@ import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-@Slf4j
 @Component
 public class QSIPClient {
-    @Autowired
-    UdpMessageGateway messageGateway;
-
     private int cSeq = 1;
 
     @Value("${ari.host}")
@@ -153,11 +149,12 @@ public class QSIPClient {
 
             request.addHeader(expiresHeader);
 
-            String sendPayload = request.toString();
 
-            log.info(sendPayload);
-
-            messageGateway.send(sendPayload);
+            UnicastSendingMessageHandler handler =
+                    new UnicastSendingMessageHandler(asteriskHost, asteriskPort,false,true,"localhost",0,13000);
+            String payload = request.toString();
+            handler.handleMessage(MessageBuilder.withPayload(payload).build());
+            handler.stop();
         } catch (ParseException | InvalidArgumentException | SipException  e) {
             throw new RuntimeException(e);
         }
