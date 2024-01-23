@@ -29,6 +29,7 @@ public class QSIPClient {
     @Value("${ari.port}")
     private int asteriskPort;
 
+    @Value("${sip.host}")
     private String sipHostname;
 
     @Value("${sip.username}")
@@ -67,7 +68,7 @@ public class QSIPClient {
         try {
             // SIP Client 호스트 주소, nat 환경 구성에 따라 변경해야 할 수 있음
             //sipHostname = InetAddress.getLocalHost().getHostAddress();
-            sipHostname = "192.168.0.164";
+            //sipHostname = "192.168.0.164";
             // SIP Factory 생성
             SipFactory sipFactory = SipFactory.getInstance();
             sipFactory.setPathName("gov.nist");

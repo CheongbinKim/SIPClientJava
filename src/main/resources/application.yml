@@ -21,3 +21,4 @@ sip:
     username: '9999'
     password: '497844589ddca13f1ee32f44beab49ad'
     port: 13000
+    host: ${SIP_HOST:localhost}
