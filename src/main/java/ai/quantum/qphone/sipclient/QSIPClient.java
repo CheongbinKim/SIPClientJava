@@ -91,7 +91,7 @@ public class QSIPClient {
             ToHeader toHeader = headerFactory.createToHeader(toAddress, null);
 
             CallIdHeader callIdHeader = headerFactory.createCallIdHeader("myCallID");
-            CSeqHeader cSeqHeader = headerFactory.createCSeqHeader(1L, Request.REGISTER);
+            CSeqHeader cSeqHeader = headerFactory.createCSeqHeader(25555L, Request.REGISTER);
             MaxForwardsHeader maxForwards = headerFactory.createMaxForwardsHeader(70);
 
             // Via 헤더 생성
