@@ -66,8 +66,8 @@ public class QSIPClient {
          */
         try {
             // SIP Client 호스트 주소, nat 환경 구성에 따라 변경해야 할 수 있음
-            sipHostname = InetAddress.getLocalHost().getHostAddress();
-            //sipHostname = "10.212.134.1";
+            //sipHostname = InetAddress.getLocalHost().getHostAddress();
+            sipHostname = "13.125.34.67";
             // SIP Factory 생성
             SipFactory sipFactory = SipFactory.getInstance();
             sipFactory.setPathName("gov.nist");
@@ -137,7 +137,7 @@ public class QSIPClient {
             String payload = request.toString();
             handler.handleMessage(MessageBuilder.withPayload(payload).build());
             handler.stop();
-        } catch (ParseException | InvalidArgumentException | SipException | UnknownHostException e) {
+        } catch (ParseException | InvalidArgumentException | SipException  e) {
             throw new RuntimeException(e);
         }
     }
