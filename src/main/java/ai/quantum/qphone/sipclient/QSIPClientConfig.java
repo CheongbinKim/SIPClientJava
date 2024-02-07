@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.ip.udp.UnicastReceivingChannelAdapter;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.handler.annotation.Headers;
@@ -42,6 +44,8 @@ public class QSIPClientConfig {
     public MessageChannel udpOutputChannel() {
         return new DirectChannel();
     }
+
+
 
     @Bean
     public UnicastReceivingChannelAdapter udpIn() {

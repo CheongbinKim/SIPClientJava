@@ -1,7 +1,5 @@
 package ai.quantum.qphone.sipclient;
 
-import gov.nist.javax.sip.header.Event;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.ip.udp.UnicastSendingMessageHandler;
 import org.springframework.integration.support.MessageBuilder;
@@ -16,12 +14,13 @@ import javax.sip.address.SipURI;
 import javax.sip.header.*;
 import javax.sip.message.MessageFactory;
 import javax.sip.message.Request;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 
 @Component
 public class QSIPClient {
@@ -149,12 +148,42 @@ public class QSIPClient {
 
             request.addHeader(expiresHeader);
 
+            UnicastSendingMessageHandler handler = new UnicastSendingMessageHandler(asteriskHost, asteriskPort);
 
-            UnicastSendingMessageHandler handler =
-                    new UnicastSendingMessageHandler(asteriskHost, asteriskPort,false,true,"localhost",0,13000);
             String payload = request.toString();
             handler.handleMessage(MessageBuilder.withPayload(payload).build());
-            handler.stop();
+
+//            final int testPort = 20002;
+//            byte[] buffer = new byte[8];
+//            final DatagramPacket receivedPacket = new DatagramPacket(buffer, buffer.length);
+//            final CountDownLatch latch = new CountDownLatch(1);
+//            Executors.newSingleThreadExecutor().execute(new Runnable() {
+//                public void run() {
+//                    try {
+//                        DatagramSocket socket = new DatagramSocket(testPort);
+//                        socket.receive(receivedPacket);
+//                        latch.countDown();
+//                        socket.close();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//
+//            Thread.sleep(1000);
+//
+//            UnicastSendingMessageHandler handler = new UnicastSendingMessageHandler(asteriskHost, asteriskPort);
+//
+//            String payload = request.toString();
+//            handler.handleMessage(MessageBuilder.withPayload(payload).build());
+//
+//            byte[] src = receivedPacket.getData();
+//            int length = receivedPacket.getLength();
+//            int offset = receivedPacket.getOffset();
+//            byte[] dest = new byte[length];
+//            System.arraycopy(src, offset, dest, 0, length);
+//            System.out.println(new String(dest));
+//            handler.stop();
         } catch (ParseException | InvalidArgumentException | SipException  e) {
             throw new RuntimeException(e);
         }
